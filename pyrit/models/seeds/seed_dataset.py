@@ -86,6 +86,7 @@ class SeedDataset(BaseModel):
           when the seed has none.
         - List defaults (harm_categories, authors, groups) are concatenated with deterministic
           order-preserving dedup (dataset values first, then seed-only additions).
+          Bare empty strings are treated as missing metadata.
         - For prompts: ``data_type`` falls back to the dataset's; ``role`` defaults to ``"user"``.
         - For objective/simulated_conversation: ``data_type``/``role``/``sequence``/
           ``parameters`` are stripped — they aren't valid fields on those classes and a
@@ -131,7 +132,7 @@ class SeedDataset(BaseModel):
                 p["dataset_name"] = default_dataset_name
 
             for key in _LIST_DEFAULT_KEYS:
-                p[key] = combine_list(data.get(key), p.get(key))
+                p[key] = combine_list(data.get(key) or None, p.get(key) or None)
 
             if seed_type == "prompt":
                 if not p.get("data_type"):

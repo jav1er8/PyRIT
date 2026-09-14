@@ -64,8 +64,8 @@ def combine_list(
     Combine two lists or strings into a single list with unique values.
 
     Order is preserved: items appear in first-occurrence order, taking ``list1``
-    before ``list2``. ``None`` is treated as empty and a bare string as a
-    single-element list.
+    before ``list2``. ``None`` is treated as empty and a bare string (including
+    ``""``) as a single-element list.
 
     Args:
         list1 (str | list[str] | None): First list or string to combine.
@@ -77,7 +77,7 @@ def combine_list(
     """
 
     def _as_list(value: str | list[str] | None) -> list[str]:
-        if not value:
+        if value is None:
             return []
         return [value] if isinstance(value, str) else list(value)
 

@@ -1,6 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
 
+import pytest
+
 from pyrit.common.utils import combine_list, to_sha256
 
 
@@ -32,6 +34,28 @@ def test_combine_list_treats_none_as_empty():
     assert combine_list(None, ["a"]) == ["a"]
     assert combine_list(["a"], None) == ["a"]
     assert combine_list(None, None) == []
+
+
+@pytest.mark.parametrize(
+    ("left", "right", "expected"),
+    [
+        ("", [], [""]),
+        ([], "", [""]),
+        ("", "", [""]),
+        ("", None, [""]),
+        (None, "", [""]),
+        ([""], [], [""]),
+        ([], [""], [""]),
+        ("", [""], [""]),
+        ([""], "", [""]),
+        ("", ["a", ""], ["", "a"]),
+        (["a"], "", ["a", ""]),
+    ],
+)
+def test_combine_list_preserves_empty_strings(
+    *, left: str | list[str] | None, right: str | list[str] | None, expected: list[str]
+) -> None:
+    assert combine_list(left, right) == expected
 
 
 def test_combine_list_duplicates_removed():
